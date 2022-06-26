@@ -51,5 +51,5 @@ document.getElementById("stop_simulation").onclick = function() {
 };
 
 document.getElementById("change_player").onclick = function(){
-    game.scene.getScene("game").prueba();
+    game.scene.getScene("game").controll();
 };

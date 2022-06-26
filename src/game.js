@@ -11,7 +11,7 @@ export class Game extends Phaser.Scene{
         this.impacthapp2 = false;
         this.simulating = false;
         this.restarting = false;
-        
+        this.control = false;
         }
 
     init(){
@@ -58,7 +58,8 @@ export class Game extends Phaser.Scene{
 
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        var timer = this.time.delayedCall(5000,this.tiempo,null,this)
+        // timer para cambiar el tamaño del tablero pasado un tiempo
+        //var timer = this.time.delayedCall(5000,this.tiempo,null,this)
         
 
     }
@@ -76,8 +77,9 @@ export class Game extends Phaser.Scene{
 0
     }
 
-    prueba(){
+    controll(){
         console.log("LAHROA");
+        this.control = true;
     }
 
     update(){
@@ -118,15 +120,20 @@ export class Game extends Phaser.Scene{
 
         /*this.player1.setVelocityY(0);
         this.player2.setVelocityY(0);*/ 
-
-        if (this.cursors.up.isDown) {
-            this.player1.setVelocityY(-350);
-        } else if (this.cursors.down.isDown) {
-            this.player1.setVelocityY(350);
+        if(this.control){
+            this.player1.setVelocityY(0);
+            if (this.cursors.up.isDown) {
+                this.player1.setVelocityY(-350);
+            } else if (this.cursors.down.isDown) {
+                this.player1.setVelocityY(350);
+            }
+        }else{
+            this.algoritmo1.aprendizaje(this.getSituation(),1);
         }
+        
         //console.log(this.getSituacion())
 
-        this.algoritmo1.aprendizaje(this.getSituation(),1);
+        
         this.algoritmo2.aprendizaje(this.getSituation(),2);
         
         if(this.restarting){
