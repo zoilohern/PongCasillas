@@ -44,7 +44,7 @@ export class Game extends Phaser.Scene{
 
         this.reward1 = 0;
         this.reward2 = 0;
-        this.dibujar();
+        this.draw();
 
         console.log(this.getSituation());
 
@@ -73,13 +73,13 @@ export class Game extends Phaser.Scene{
         this.incrw = this.width/this.col;
         this.incrh = this.height/this.row;
         this.graphics.destroy();
-        this.dibujar();
+        this.draw();
 0
     }
 
     controll(){
         console.log("LAHROA");
-        this.control = true;
+        this.control = !this.control;
     }
 
     update(){
@@ -215,7 +215,7 @@ export class Game extends Phaser.Scene{
     }
 
     //Dibuja las lineas para poder representar 
-    dibujar(){
+    draw(){
         this.graphics = this.add.graphics()
         this.graphics.lineStyle(1, 0xff5000,1)
         for(var i = this.incrw; i<this.width; i= i + this.incrw){
