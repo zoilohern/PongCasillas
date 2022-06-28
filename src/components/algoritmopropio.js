@@ -33,13 +33,13 @@ class QTable{
         return acc;
     }
 
-    updateQTable(state, state2, recompensa, accion, accion2){
+    updateQTable(state, state2, reward, action, action2){
         this.checkState(state);
         this.checkState(state2);
-        let predic = this.Q[state][accion];
+        let predic = this.Q[state][action];
 
-        let target = recompensa + this.gamma *this.Q[state2][accion2];
-        this.Q[state][accion] = this.Q[state][accion] + this.alpha * (target - predic);
+        let target = reward + this.gamma *this.Q[state2][action2];
+        this.Q[state][action] = this.Q[state][action] + this.alpha * (target - predic);
     }
 
 }
@@ -88,13 +88,13 @@ export class Algoritmo {
     }
 
     elegir_Accion(state){
-        var accion = 0;
+        var action = 0;
         if(Math.random()<this.epsilon){
-            accion = this.Q.getRandomAction(state)
+            action = this.Q.getRandomAction(state)
         }else{
-            accion = this.Q.getMaxAct(state)
+            action = this.Q.getMaxAct(state)
         }
-        return accion;
+        return action;
     }
 
     aprendizaje(state,jug){
