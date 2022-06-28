@@ -118,8 +118,6 @@ export class Game extends Phaser.Scene{
         }
 
 
-        /*this.player1.setVelocityY(0);
-        this.player2.setVelocityY(0);*/ 
         if(this.control){
             this.player1.setVelocityY(0);
             if (this.cursors.up.isDown) {
@@ -131,7 +129,6 @@ export class Game extends Phaser.Scene{
             this.algoritmo1.aprendizaje(this.getSituation(),1);
         }
         
-        //console.log(this.getSituacion())
 
         
         this.algoritmo2.aprendizaje(this.getSituation(),2);
