@@ -4,44 +4,54 @@ export class Ball{
         this.relatedScene = scene;
         this.posx = posx;
         this.posy = posy;
+        this.bounceInPlatform = false;
 
     }
 
     create(){
-        this.ball = this.relatedScene.physics.add.image(this.posx,this.posy,'ball');
-        
-        this.ball.tint = 0x00FFF77;
-        this.ball.setCollideWorldBounds(true);
-        this.ball.setBounce(1);
+        this.sprite = this.relatedScene.physics.add.image(this.posx,this.posy,'ball');
+        this.sprite.tint = 0x00FFF77;
+        this.sprite.setCollideWorldBounds(true);
+        this.sprite.setBounce(1);
+    }
+
+    update(){
+        if(this.bounceInPlatform){
+            
+        }
     }
         
     get(){
-        return this.ball;   
+        return this.sprite;   
     }
 
     setVelocityX(num){
-        this.ball.setVelocityX(num);
+        this.sprite.setVelocityX(num);
     }
 
     setVelocityY(num){
-        this.ball.setVelocityY(num);
+        this.sprite.setVelocityY(num);
     }
 
     setVelocities(){
         const initialXSpeed = (Math.random() * 500 + 50) * (this.randomTwo()); //450 / (Math.floor(Math.random() * 1000)) * this.randomTwo(); //* (this.randomTwo());
         const initialYSpeed = Math.random() * 300 + 200; //450;
-        this.ball.setVelocityX(initialXSpeed);
-        this.ball.setVelocityY(initialYSpeed);
+        this.sprite.setVelocityX(initialXSpeed);
+        this.sprite.setVelocityY(initialYSpeed);
     }
 
     restart(){
-        this.ball.x = this.relatedScene.width/2;
-        this.ball.y = this.relatedScene.height/5;
+        this.sprite.x = this.relatedScene.width/2;
+        this.sprite.y = this.relatedScene.height/5;
         this.setVelocities();
     }
 
+    impact(){
+        this.bounceInPlatform = true;
+    }
+
     coordenadas(){
-        let res = [Math.floor(this.ball.y/this.relatedScene.incrh), Math.floor(this.ball.x/this.relatedScene.incrw)]
+        let res = [Math.floor(this.sprite.y/this.relatedScene.incrh), Math.floor(this.sprite.x/this.relatedScene.incrw)]
         return res;
     }
 

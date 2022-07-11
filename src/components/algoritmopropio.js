@@ -29,7 +29,7 @@ class QTable{
 
     getRandomAction(state){
         this.checkState(state);
-        let acc = Math.floor(Math.random*this.nAcc)
+        let acc = Math.floor(Math.random()*this.nAcc)
         return acc;
     }
 
@@ -48,7 +48,7 @@ class QTable{
 
 export class Algoritmo {
 
-    constructor(scene,row,col,numAcc){
+    constructor(scene,row,col,numAcc,id){
 
         this.relatedScene = scene
         this.nEpisodes = 0
@@ -60,6 +60,7 @@ export class Algoritmo {
         this.col = col;
         this.Q = new QTable(numAcc)
         this.rew = 0;
+        this.id = id;
 
         var timer = scene.time.addEvent({
             delay: 5000,
@@ -98,6 +99,23 @@ export class Algoritmo {
     }
 
     aprendizaje(state,jug){
+
+        //comprobamos si ha habido impacto con nuestra plataforma
+        if(this.id == 1 && this.relatedScene.impacthapp1){
+            this.addReward(50);
+            this.relatedScene.impacthapp1 = false;
+        }else if(this.id == 2 && this.relatedScene.impacthapp2){
+            this.addReward(50);
+            this.relatedScene.impacthapp2 = false;
+        }
+
+        //comprobamos si hemos ganado o perdido
+        if(this.id == this.relatedScene.winner){
+            this.addReward(100);
+        }else if (this.relatedScene.restarting){
+            this.addReward(-10000);
+        }
+
         if (state == this.lastState){
             return;
         }
@@ -108,13 +126,12 @@ export class Algoritmo {
         }else{
             let state2 = state;
             let action2 = this.elegir_Accion(state2);
-            this.Q.updateQTable(this.lastState, state2, this.rew,this.lastAction,this.lastState);
+            this.Q.updateQTable(this.lastState, state2, this.rew,this.lastAction,action2);
             this.lastState = state2;
             this.lastAction = action2;
         }
 
-        this.relatedScene.realizarAccion(this.lastAction,jug);
-
+        this.relatedScene.doAct(this.lastAction,this.id);
         this.rew = 0;
 
     }

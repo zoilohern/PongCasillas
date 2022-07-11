@@ -4,26 +4,43 @@ export class Platform{
         this.relatedScene = scene;
         this.posx = posx;
         this.posy = posy;
+        this.action = -1;
+        this.vel = 350;
     }
 
     create(){
-        this.platform = this.relatedScene.physics.add.image(this.posx,this.posy,'paddle').setImmovable();
-        this.platform.setScale(.75)
-        this.platform.body.allowGravity = false;
-        this.platform.setCollideWorldBounds(true);
+        this.sprite = this.relatedScene.physics.add.image(this.posx,this.posy,'paddle').setImmovable();
+        this.sprite.setScale(.75)
+        this.sprite.body.allowGravity = false;
+        this.sprite.setCollideWorldBounds(true);
     }
 
     get(){
-        return this.platform;
+        return this.sprite;
     }
 
 
     setVelocityY(num){
-        this.platform.body.setVelocityY(num);
+        this.sprite.body.setVelocityY(num);
     }
 
     coordenada(){
-        return Math.floor(this.platform.y/this.relatedScene.incrh)
+        return Math.floor(this.sprite.y/this.relatedScene.incrh)
+    }
+
+    update(){
+        if(this.action == 0){
+            this.setVelocityY(0)
+        }else if(this.action == 1 ){
+            this.setVelocityY(this.vel)
+        }else if(this.action == 2){
+            this.setVelocityY(-this.vel);
+        }
+        //console.log("ACCION ES  "+ this.action );
+    }
+
+    changeAct(act){
+        this.action = act;
     }
 
 }

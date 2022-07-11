@@ -1,6 +1,7 @@
 import { Ball } from "./components/ball.js";
 import { Platform } from "./components/platform.js";
 import { Algoritmo } from "./components/algoritmopropio.js";
+import { Controller } from "./components/controller.js";
 
 export class Game extends Phaser.Scene{
     constructor(row,col){
@@ -11,12 +12,13 @@ export class Game extends Phaser.Scene{
         this.impacthapp2 = false;
         this.simulating = false;
         this.restarting = false;
-        this.control = false;
+        this.controlling = false;
+        this.winner = -1;
         }
 
     init(){
-        this.algoritmo1 = new Algoritmo(this,this.row,this.col,3);
-        this.algoritmo2 = new Algoritmo(this,this.row,this.col,3);
+        this.algoritmo1 = new Algoritmo(this,this.row,this.col,3,1);
+        this.algoritmo2 = new Algoritmo(this,this.row,this.col,3,2);
         this.ball = new Ball(this, this.physics.world.bounds.width/2, this.physics.world.bounds.height/2);
         this.player2 = new Platform(this,this.physics.world.bounds.width-10, this.physics.world.bounds.height /2);
         this.player1 = new Platform(this,10, this.physics.world.bounds.height /2)
@@ -58,6 +60,8 @@ export class Game extends Phaser.Scene{
 
 
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.controller = new Controller(this,this.cursors);
+        
         // timer para cambiar el tamaño del tablero pasado un tiempo
         //var timer = this.time.delayedCall(5000,this.tiempo,null,this)
         
@@ -74,12 +78,12 @@ export class Game extends Phaser.Scene{
         this.incrh = this.height/this.row;
         this.graphics.destroy();
         this.draw();
-0
+
     }
 
     controll(){
         console.log("LAHROA");
-        this.control = !this.control;
+        this.controlling = !this.controlling;
     }
 
     update(){
@@ -98,43 +102,43 @@ export class Game extends Phaser.Scene{
             this.premio = -100;
         }*/
 
-        if(this.impacthapp1){
+        /*if(this.impacthapp1){
+            //Para sustituir esto a lo mejor comprobar cuando este booleano es true y updetear respectivamente
             this.algoritmo1.addReward(50)
             this.impacthapp1 = false;
         }
         if(this.impacthapp2){
             this.algoritmo2.addReward(50)
             this.impacthapp2 = false;
-        }
+        }*/
 
         if(this.ball.get().body.x < this.player1.get().body.x+5){
-            this.algoritmo1.addReward(-10000)
-            this.algoritmo2.addReward(100)
+            //this.algoritmo1.addReward(-10000)
+            //this.algoritmo2.addReward(100)
             this.restarting = true;
+            this.winner = 2;
         }else if(this.ball.get().body.x>this.player2.get().body.x-5){
-            this.algoritmo1.addReward(100)
-            this.algoritmo2.addReward(-10000)
+            //this.algoritmo1.addReward(100)
+            //this.algoritmo2.addReward(-10000)
             this.restarting = true;
+            this.winner = 1;
         }
 
 
-        if(this.control){
-            this.player1.setVelocityY(0);
-            if (this.cursors.up.isDown) {
-                this.player1.setVelocityY(-350);
-            } else if (this.cursors.down.isDown) {
-                this.player1.setVelocityY(350);
-            }
+        if(this.controlling){
+            this.controller.update();
         }else{
             this.algoritmo1.aprendizaje(this.getSituation(),1);
         }
-        
-
+        this.player1.update();
         
         this.algoritmo2.aprendizaje(this.getSituation(),2);
+
+        this.player2.update();
         
         if(this.restarting){
             this.restarting = false;
+            this.winner = -1;
             this.restart();
         }
 
@@ -147,44 +151,26 @@ export class Game extends Phaser.Scene{
 
     impact1(){
         this.impacthapp1 = true;
+        this.ball.impact();
     }
 
     impact2(){
         this.impacthapp2 = true;
+        this.ball.impact();
     }
 
     restart(){
-        /*this.ball.x = 400;
-        this.ball.y = 200;
-        const initialXSpeed = Math.random() * 200 + 50;
-        const initialYSpeed = Math.random() * 200 + 50;
-        this.ball.setVelocityX(initialXSpeed);
-        this.ball.setVelocityY(initialYSpeed);
-        this.player1.x = 400;
-        this.player2.x = 400*/
         this.ball.restart();
         this.algoritmo1.restart();
         this.algoritmo2.restart();
     }
 
     
-    realizarAccion(action,jug){
+    doAct(action,jug){
         if(jug==1){
-            if(action == 0){
-                this.player1.setVelocityY(-350)
-            }else if (action == 1){
-                this.player1.setVelocityY(350)
-            }else if (action == 2){
-                this.player1.setVelocityY(0)
-            }
+            this.player1.changeAct(action);
         }else{
-            if(action == 0){
-                this.player2.setVelocityY(-350)
-            }else if (action == 1){
-                this.player2.setVelocityY(350)
-            }else if (action == 2){
-                this.player2.setVelocityY(0)
-            }
+            this.player2.changeAct(action);
         }
         
     }
@@ -224,17 +210,6 @@ export class Game extends Phaser.Scene{
         }
 
         this.graphics.lineStyle(25, 0x1EFA08,2)
-
-        
-        /*if (this.exito<this.width/2){
-            
-        }else{
-            this.graphics.lineBetween(this.exito-100, 0, this.exito, 0);
-        }*/
-        //this.graphics.lineBetween(this.exito-50, 0, this.exito+50, 0);
-        
-
-
     }
 
     
