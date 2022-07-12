@@ -79,7 +79,7 @@ export class Algoritmo {
     }
 
     tiempo(){
-        console.log("tabla Q " + JSON.stringify(this.Q));  
+        //console.log("tabla Q " + JSON.stringify(this.Q));  
     }
 
     restart(){
@@ -98,47 +98,54 @@ export class Algoritmo {
         return action;
     }
 
-    aprendizaje(state,jug){
+    aprendizaje(element){
 
         //comprobamos si ha habido impacto con nuestra plataforma
         if(this.id == 1 && this.relatedScene.impacthapp1){
-            this.addReward(50);
+            this.addReward(50,element);
             this.relatedScene.impacthapp1 = false;
         }else if(this.id == 2 && this.relatedScene.impacthapp2){
-            this.addReward(50);
+            this.addReward(50,element);
             this.relatedScene.impacthapp2 = false;
         }
 
         //comprobamos si hemos ganado o perdido
         if(this.id == this.relatedScene.winner){
-            this.addReward(100);
+            this.addReward(100,element);
         }else if (this.relatedScene.restarting){
-            this.addReward(-10000);
+            this.addReward(-10000,element);
         }
 
-        if (state == this.lastState){
+        /*if (state == this.lastState){
             return;
-        }
+        }*/
 
-        if(this.lastState == -1){
-            this.lastState = state;
-            this.lastAction = this.elegir_Accion(state);
+        if(element.state1 == null){
+            element.state1 = element.getState();
+            element.action1 = this.elegir_Accion(element.state1);
         }else{
-            let state2 = state;
-            let action2 = this.elegir_Accion(state2);
-            this.Q.updateQTable(this.lastState, state2, this.rew,this.lastAction,action2);
-            this.lastState = state2;
-            this.lastAction = action2;
+            let state2 = element.getState();
+            if(state2!=element.state1){
+                let action2 = this.elegir_Accion(state2);
+                this.Q.updateQTable(element.state1, state2, element.stepReward,element.action1,action2);
+                element.stepReward = 0;
+                element.state1 = state2;
+                element.action1 = action2;
+            }
+            
         }
 
-        this.relatedScene.doAct(this.lastAction,this.id);
-        this.rew = 0;
+        this.relatedScene.doAct(element.action1,this.id);
+        //this.rew = 0;
 
     }
 
-    addReward(r){
-        this.rew+=r;
-        this.total_reward +=this.rew;
+    addReward(r,el){
+        el.stepReward+=r;
+        el.episodeReward+=r;
+        this.total_reward +=r;
+       /* this.rew+=r;
+        this.total_reward +=this.rew;*/
     }
 
     getRndInteger(min, max) {

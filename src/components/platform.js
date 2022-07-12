@@ -6,6 +6,10 @@ export class Platform{
         this.posy = posy;
         this.action = -1;
         this.vel = 350;
+        this.state1 = null;
+        this.action1 = null;
+        this.stepReward = 0;
+        this.episodeReward = 0;
     }
 
     create(){
@@ -17,6 +21,10 @@ export class Platform{
 
     get(){
         return this.sprite;
+    }
+
+    getState(){
+        return this.relatedScene.getSituation();
     }
 
 

@@ -124,15 +124,15 @@ export class Game extends Phaser.Scene{
             this.winner = 1;
         }
 
-
+        this.ball.update();
         if(this.controlling){
             this.controller.update();
         }else{
-            this.algoritmo1.aprendizaje(this.getSituation(),1);
+            this.algoritmo1.aprendizaje(this.player1);
         }
         this.player1.update();
         
-        this.algoritmo2.aprendizaje(this.getSituation(),2);
+        this.algoritmo2.aprendizaje(this.player2);
 
         this.player2.update();
         
@@ -151,12 +151,12 @@ export class Game extends Phaser.Scene{
 
     impact1(){
         this.impacthapp1 = true;
-        this.ball.impact();
+        this.ball.impact(1);
     }
 
     impact2(){
         this.impacthapp2 = true;
-        this.ball.impact();
+        this.ball.impact(2);
     }
 
     restart(){

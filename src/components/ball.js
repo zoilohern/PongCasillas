@@ -5,7 +5,7 @@ export class Ball{
         this.posx = posx;
         this.posy = posy;
         this.bounceInPlatform = false;
-
+        this.platform = null;
     }
 
     create(){
@@ -17,7 +17,16 @@ export class Ball{
 
     update(){
         if(this.bounceInPlatform){
-            
+            let relative = this.sprite.y-this.platform.sprite.y;
+            let amount = ((this.platform.sprite.body.width/2) - Math.abs(relative)) / (this.platform.sprite.body.width/2); 
+            let amounty = (100-50) * (1-amount)+50;
+            if(relative<0){
+                amounty *= -1;
+            }
+            this.sprite.setVelocityY(amounty);
+            //this.sprite.setVelocityX(amounty)
+            this.bounceInPlatform = false;
+            //console.log("Se ha ejecutado el impacto")
         }
     }
         
@@ -46,8 +55,13 @@ export class Ball{
         this.setVelocities();
     }
 
-    impact(){
+    impact(num){
         this.bounceInPlatform = true;
+        if(num==1){
+            this.platform = this.relatedScene.player1;
+        }else{
+            this.platform = this.relatedScene.player2;
+        }
     }
 
     coordenadas(){
